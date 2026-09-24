@@ -78,27 +78,25 @@ const Data = [
 ];
    
   
-
    
-   const handleSubmit =  async (e: React.FormEvent<HTMLFormElement>) => {
+const handleSubmit =  async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-   const brand = formData.get("Brand");
+    const brand = formData.get("Brand");
+    const ram = Number(formData.get("RAM(in gb)"));
+    const storage = Number(formData.get("Storage(in gb)"));
+    const battery = Number(formData.get("Battery(in mah)"));
+    const mainCamera = Number(formData.get("Main Camera (in megapixels)"));
+    const selfieCamera = Number(formData.get("Selfie Camera(in megapixels)"));
+    const screenSize = Number(formData.get("Screen Size(in inches)"));
+    const refreshRate = Number(formData.get("Refresh Rate(in hz)"));
+    const fiveG = formData.get("5G");
+    const a = fiveG === "Yes" ? 1 :2;
+    const fastCharging = Number(formData.get("Fast Charging(in Watts)"));
+    const processorScore = Number(formData.get("Processor Score"));
 
-const ram = Number(formData.get("RAM(in gb)"));
-const storage = Number(formData.get("Storage(in gb)"));
-const battery = Number(formData.get("Battery(in mah)"));
-const mainCamera = Number(formData.get("Main Camera (in megapixels)"));
-const selfieCamera = Number(formData.get("Selfie Camera(in megapixels)"));
-const screenSize = Number(formData.get("Screen Size(in inches)"));
-const refreshRate = Number(formData.get("Refresh Rate(in hz)"));
 
-const fiveG = formData.get("5G");
-
-const fastCharging = Number(formData.get("Fast Charging(in Watts)"));
-const processorScore = Number(formData.get("Processor Score"));
-
-const data = {
+    const data = {
     brand: brand,
     ram: ram,
     storage: storage,
@@ -107,18 +105,32 @@ const data = {
     selfieCamera: selfieCamera,
     screenSize: screenSize,
     refreshRate: refreshRate,
-    fiveG: fiveG,
+    fiveG: a,
     fastCharging: fastCharging,
     processorScore: processorScore
-};
-
-const response = await axios.post("http://localhost:8080/predict", data);
-
-console.log(response.data);
- 
+    };
 
 
-    
+   let error: boolean = false;
+
+    for (const value of Object.values(data)) {
+       console.log(value)
+    if (value === "" || value===0) {
+        
+        console.log("error");
+        error = true;
+        break;
+    }
+}
+
+if (error) {
+    return;
+}
+
+    const response = await axios.post("http://localhost:8080/predict", data);
+
+    console.log(response.data);
+
 
 };
 
