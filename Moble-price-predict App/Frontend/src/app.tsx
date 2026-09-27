@@ -1,6 +1,9 @@
 
 import axios from "axios";
+import { useState } from "react";
 export default function App(){
+
+
 
 const Data = [
     {
@@ -76,6 +79,9 @@ const Data = [
         values: [30, 40, 50, 60, 65, 70, 75, 80, 85, 90, 95, 100]
     }
 ];
+
+const [predictedprice, setPredictedprice] = useState<number | null>(null);
+
    
   
    
@@ -129,8 +135,14 @@ if (error) {
 
     const response = await axios.post("http://localhost:8080/predict", data);
 
-    console.log(response.data);
+    const price = Math.round(response.data.price / 100) * 100;
 
+    setPredictedprice(price);
+    
+    setTimeout(()=>{
+        setPredictedprice(null);
+    },5000)
+    
 
 };
 
@@ -138,36 +150,131 @@ if (error) {
 
 
     return (
-        <div className="">
-            <div className="bg-emerald-700 text-white font-medium text-center w-fit mx-auto p-5 text-4xl mt-2 rounded-2xl">Mobile Price Predictor</div>
-            <form action="" onSubmit={handleSubmit}>
-            <div className="w-200  h-170 gap-20 mx-auto mt-5 p-4 flex flex-wrap">
-                {Data.map((data,key)=>{
-                    return (
-                        <select name={data.name} key={key}  className=" h-15 w-50 p-3 px-5 border-1 bg-stone-600 text-white rounded-2xl  cursor-pointer">
-                           <option value="">
-                         Select {data.name}
-                            </option>
+    predictedprice === null ? (
+        <div className="min-h-screen bg-slate-950 py-10 px-6">
 
-                            {data.values.map((value,key)=>{
-                                return (
-                                    <option value={String(value)} key={key}>
-                                        {value}
-                                     </option>
-                                )
-                            })}
+            {/* Heading */}
+            <div className="text-center mb-10">
+                <h1 className="text-4xl md:text-5xl font-bold text-white">
+                    Mobile Price Predictor
+                </h1>
 
-                        </select>
-                        
-                    );
-                })}
+                <p className="text-slate-400 mt-3">
+                    Enter mobile specifications to predict its price
+                </p>
+            </div>
+
+            {/* Form Card */}
+            <form
+                onSubmit={handleSubmit}
+                className="max-w-5xl mx-auto bg-slate-900 border border-slate-700 rounded-3xl p-8 shadow-2xl"
+            >
+
+                {/* Inputs */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    {Data.map((data, key) => {
+                        return (
+                            <div key={key} className="flex flex-col gap-2">
+
+                                <label className="text-sm font-medium text-slate-300">
+                                    {data.name}
+                                </label>
+
+                                <select
+                                    name={data.name}
+                                    className="h-12 w-full px-4 rounded-xl
+                                    bg-slate-800 text-white
+                                    border border-slate-600
+                                    outline-none
+                                    focus:border-blue-500
+                                    focus:ring-2 focus:ring-blue-500/30
+                                    cursor-pointer
+                                    transition"
+                                >
+
+                                    <option value="">
+                                        Select {data.name}
+                                    </option>
+
+                                    {data.values.map((value, key) => {
+                                        return (
+                                            <option
+                                                value={String(value)}
+                                                key={key}
+                                            >
+                                                {value}
+                                            </option>
+                                        );
+                                    })}
+
+                                </select>
+
+                            </div>
+                        );
+                    })}
+
                 </div>
 
-                <button className="block mx-auto border rounded-2xl p-2 px-4 bg-blue-400 text-white hover:bg-blue-500 cursor-pointer">Predict</button>
-</form>
+                {/* Button */}
+                <button
+                    type="submit"
+                    className="block mx-auto mt-10
+                    px-10 py-3
+                    rounded-xl
+                    bg-blue-600
+                    text-white font-semibold
+                    hover:bg-blue-700
+                    active:scale-95
+                    transition-all
+                    cursor-pointer
+                    shadow-lg shadow-blue-900/30"
+                >
+                    Predict Price
+                </button>
 
-                </div>
-    );
+            </form>
+
+        </div>
+
+    ) : (
+
+        /* Result Screen */
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center px-6">
+
+            <div className="
+                w-full max-w-md
+                bg-slate-900
+                border border-emerald-600/40
+                rounded-3xl
+                p-10
+                text-center
+                shadow-2xl shadow-emerald-950/40
+            ">
+
+                <p className="text-slate-400 text-lg mb-3">
+                    Predicted Mobile Price
+                </p>
+
+                <h2 className="
+                    text-5xl
+                    font-bold
+                    text-emerald-400
+                    mb-6
+                ">
+                    ₹{predictedprice}
+                </h2>
+
+                <p className="text-slate-500 text-sm">
+                    This price is estimated based on the specifications
+                    provided.
+                </p>
+
+            </div>
+
+        </div>
+    )
+);
             
        
             

@@ -2,6 +2,7 @@ package com.example.Backend.Controller;
 
 
 import com.example.Backend.Dto.PredictRequestDto;
+import com.example.Backend.Dto.PredictResponseDto;
 import com.example.Backend.Service.PredictService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ public class PredictRequestController {
     }
 
     @PostMapping("/predict")
-    public String Predict(@RequestBody PredictRequestDto predictRequestDto){
+    public PredictResponseDto Predict(@RequestBody PredictRequestDto predictRequestDto){
         return predictService.predict(predictRequestDto);
     }
 
